@@ -1,0 +1,37 @@
+@import "../../../../../../../../node_modules/rfs/scss";
+@import '../../../../../../../dist/variables.scss';
+@import '../historico.component.scss';
+
+// CONTAINER MEIO - ITENS
+
+.CRIACAO {
+    border: 1px solid $success;
+    color: $success;
+}
+
+.ALTERACAO {
+    border: 1px solid $warn;
+    color: $warn;
+}
+
+.REMOCAO,
+.REMOCAO_EM_MASSA {
+    border: 1px solid $error;
+    color: $error;
+}
+
+.RELATORIO,
+.OUTRO {
+    border: 1px solid $common;
+    color: $common;
+}
+
+.icone_opc {
+    margin-left: 0.3rem;
+    cursor: pointer;
+}
+
+.disabled_icon {
+    color: $dark-grey;
+    cursor: default;
+}

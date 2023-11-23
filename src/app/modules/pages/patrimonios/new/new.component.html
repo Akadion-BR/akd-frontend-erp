@@ -1,0 +1,76 @@
+<div class="container col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mat-elevation-z8">
+
+    <h1 class="titulo col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        {{ titulo }}
+    </h1>
+
+    <hr class="hr">
+
+    <form #dadosAcessoForm="ngForm" class="row form col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12"
+        [formGroup]="dadosPatrimonio" (keyup.enter)="botaoProximo.click()" (keyup.escape)="botaoRetorno.click()">
+
+        <app-title-container class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" [titulo]="'Dados do patrimônio'"
+            [descricao]="'Preenchimento dos dados do patrimônio'"></app-title-container>
+
+        <!-- SELECT GROUP TIPO -->
+        <app-custom-select class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" formControlName="tipoPatrimonio"
+            [tabIndex]="1" [titulo]="'Tipo'" #selectTipo [options]="geraOptionsTipoPatrimonio()"></app-custom-select>
+
+        <!-- INPUT GROUP DESCRICAO -->
+        <app-custom-input class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" [id]="'inputDescricao'"
+            [titulo]="'Descrição'" [tabIndex]="2" [maxLength]="50"
+            [touched]="dadosPatrimonio.controls['descricao'].touched" [todosCaracteresMaiusculos]="true"
+            [customIcon]="null" [disabledGroup]="dadosPatrimonio.controls['descricao'].disabled"
+            [valido]="!(dadosPatrimonio.controls['descricao'].touched && dadosPatrimonio.controls['descricao'].invalid)"
+            [mensagemErro]="'Campo obrigatório'" formControlName="descricao" #inputDescricao></app-custom-input>
+
+        <!-- INPUT GROUP VALOR -->
+        <div class="row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 input_group input_group_without_component">
+            <div class="row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 label_container">
+                <label class="label"
+                    [ngClass]="{'label_invalida': dadosPatrimonio.controls['valor'].invalid  && dadosPatrimonio.controls['valor'].touched}">
+                    Valor
+                </label>
+            </div>
+            <div class="input_container col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <input type="number" formControlName="valor" name="valor" max="9999999.00" min="0.00" step=".01"
+                    #inputValor (input)="realizaTratamentoValor($event)"
+                    [ngClass]="{'input_invalida': dadosPatrimonio.controls['valor'].invalid && dadosPatrimonio.controls['valor'].touched}"
+                    class="input col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" tabindex="4">
+                <mat-icon [@fadeInOut] [fontIcon]="'attach_money'" (click)="inputValor.focus()"
+                    [ngClass]="{
+                'icone_error': dadosPatrimonio.controls['valor'].invalid && dadosPatrimonio.controls['valor'].touched, 
+                'icone_ok': dadosPatrimonio.controls['valor'].valid || dadosPatrimonio.controls['valor'].invalid && !dadosPatrimonio.controls['valor'].touched}" class="icone"></mat-icon>
+
+            </div>
+
+            <div [@fadeInOut]
+                *ngIf="dadosPatrimonio.controls['valor'].invalid  && dadosPatrimonio.controls['valor'].touched"
+                class="error_message_container col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <h6 class="error_message">{{ 'Este campo deve possuir valor entre 0,00 e 9.999.000,00' }}</h6>
+            </div>
+        </div>
+
+        <!-- DATE GROUP DATA DE ENTRADA -->
+        <app-custom-date-input class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" [minDate]="'1900-01-01'"
+            [maxDate]="getHoje()" [disabledGroup]="dadosPatrimonio.controls['dataEntrada'].disabled"
+            [id]="'dataEntrada'"
+            [valido]="!(dadosPatrimonio.controls['dataEntrada'].touched && dadosPatrimonio.controls['dataEntrada'].invalid)"
+            [mensagemErro]="'Data de entrada inválida'" [titulo]="'Data de aquisição'" [tabIndex]="5"
+            formControlName="dataEntrada"
+            [vazio]="getValueAtributoDadosPatrimonio('dataEntrada') == '' || getValueAtributoDadosPatrimonio('dataEntrada') == null"
+            #inputDataEntrada></app-custom-date-input>
+
+        <!-- BOTÕES DE NAVEGAÇÃO -->
+        <div class="button_container col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <button type="button" class="button botaoHabilitado" #botaoRetorno mat-button tabindex="7"
+                (click)="retornaParaTelaAnterior()">
+                Voltar
+            </button>
+            <button type="button" (keyup.enter)="null" (click)="solicitarEnvioDeFormulario()" mat-button matStepperNext
+                #botaoProximo tabindex="8" class="button botaoHabilitado">Enviar</button>
+        </div>
+
+    </form>
+
+</div>

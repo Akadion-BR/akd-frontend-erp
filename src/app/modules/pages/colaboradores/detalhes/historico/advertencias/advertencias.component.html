@@ -1,0 +1,175 @@
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 nova_advertencia_container">
+
+    <div (click)="alteraExibicaoNovaAdvertencia()"
+        class="row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 titulo_sessao_container">
+        <h3 class="titulo_sessao">
+            Gerar nova advertência
+        </h3>
+        <mat-icon [@fadeInOut] [fontIcon]="novaAdvertenciaHabilitada ? 'expand_more' : 'chevron_left'"
+            class="icone"></mat-icon>
+    </div>
+
+    <form [@slideUpDown] [formGroup]="dadosNovaAdvertencia"
+        *ngIf="novaAdvertenciaHabilitada" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 nova_advertencia_block">
+        <app-custom-input [id]="'inputMotivo'" [titulo]="'Motivo'" [tabIndex]="1" [maxLength]="40"
+            [todosCaracteresMaiusculos]="false" [mensagemErro]="'Campo obrigatório'" #inputMotivo
+            [touched]="dadosNovaAdvertencia.controls['motivo'].touched" [iconeOculto]="true"
+            [valido]="!(dadosNovaAdvertencia.controls['motivo'].touched && dadosNovaAdvertencia.controls['motivo'].invalid)"
+            [disabledGroup]="false" formControlName="motivo"></app-custom-input>
+
+        <app-custom-input [id]="'descricao'" [titulo]="'Descrição'" [tabIndex]="2" [maxLength]="500"
+            [todosCaracteresMaiusculos]="false" [mensagemErro]="'Campo obrigatório'"
+            [touched]="dadosNovaAdvertencia.controls['descricao'].touched" [iconeOculto]="true"
+            [valido]="!(dadosNovaAdvertencia.controls['descricao'].touched && dadosNovaAdvertencia.controls['descricao'].invalid)"
+            [disabledGroup]="false" formControlName="descricao"></app-custom-input>
+
+        <app-custom-select [id]="'descricao'" [titulo]="'Status'" [tabIndex]="3" [disabledGroup]="false"
+            [options]="geraOptionsStatusAdvertencia()" formControlName="status"></app-custom-select>
+
+        <div class="row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 input_group input_group_without_component">
+            <div class="row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 label_container">
+                <label class="label">Advertência assinada</label>
+                <button type="button" class="limpar_file" [@fadeInOut]
+                    *ngIf="getValueAtributoDadosNovaAdvertencia('advertenciaAssinada') != null && advertenciaAssinadaInput.value != ''"
+                    (click)="limpaInputArquivo()">Limpar</button>
+            </div>
+            <div class="input_container col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <label class="input input_file col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12"
+                    for="advertenciaAssinadaInput">
+                    {{ getValueAtributoDadosNovaAdvertencia('advertenciaAssinada') != null &&
+                    advertenciaAssinadaInput.value != ''
+                    ? advertenciaAssinadaInput.value
+                    : 'Escolher arquivo (.pdf)' }}
+                    <mat-icon [@fadeInOut] [fontIcon]="getValueAtributoDadosNovaAdvertencia('advertenciaAssinada') != null && advertenciaAssinadaInput.value != '' 
+                                            ? 'file_download_done' 
+                                            : 'add_box'" class="icone icone_ok"></mat-icon>
+                </label>
+                <input type="file" accept=".pdf" formControlName="advertenciaAssinada" name="advertenciaAssinada"
+                    style="display: none;" #advertenciaAssinadaInput id="advertenciaAssinadaInput"
+                    (change)="setaArquivo($event)" [ngClass]="{'input_invalida': dadosNovaAdvertencia.controls['advertenciaAssinada'].touched 
+                    && dadosNovaAdvertencia.controls['advertenciaAssinada'].invalid}"
+                    class="input col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" tabindex="-1">
+            </div>
+        </div>
+
+        <!-- SUBMIT -->
+        <div class="button_container col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <button (click)="gerarAdvertencia()" type="button" tabindex="5" class="button botaoHabilitado" mat-button
+                #botaoSalvar>
+                Salvar
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 hr_container">
+    <hr class="hr">
+</div>
+
+<div *ngIf="advertencias?.content?.length > 0, else conteudoVazio"
+    class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="block block_titulo_itens row col-xl-12 col-lg-12 col-md-l2 col-sm-12 col-12">
+        <div class="block_titulo_itens_titulo">
+            {{ advertencias?.totalElements == 1
+            ? advertencias?.totalElements + ' advertência encontrada'
+            : advertencias?.totalElements + ' advertências encontradas' }}
+        </div>
+    </div>
+
+    <div class="block block_itens row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+
+        <div *ngFor="let advertencia of advertencias?.content"
+            matTooltip="Advertência emitida dia {{ advertencia.dataCadastro | date: 'dd/MM/yyyy' }} às {{ advertencia.horaCadastro | slice:0:5 }}"
+            matTooltipPosition="left" class="item_container row col-xl-12 col-lg-12 col-md-l2 col-sm-12 col-12"
+            [ngClass]="{'item_container_expandido': advertencia.expandido}">
+
+            <div class="item_container_titulo row col-xl-12 col-lg-12 col-md-l2 col-sm-12 col-12">
+                <div class="row item_text item_text_titulo" (click)="advertencia.expandido = !advertencia.expandido">
+                    {{ advertencia.motivo }}
+                </div>
+
+                <div class="row item_details">
+
+                    <div class="item_details_status" [class]="advertencia.statusAdvertenciaEnum">
+                        {{ advertencia.statusAdvertenciaEnum | titlecase }}
+                    </div>
+
+                    <mat-icon [fontIcon]="'folder_open'" class="icone_details icone_arquivo"
+                        (click)="novoArquivo.click()"
+                        [ngClass]="{'dropdown-item-desabilitado': advertencia.advertenciaAssinada == null}"
+                        [matTooltip]="advertencia.advertenciaAssinada == null ? 'Adicionar anexo ' : 'Substituir anexo'"
+                        matTooltipPosition="below"></mat-icon>
+                    <input type="file" #novoArquivo style="display: none;" accept=".pdf"
+                        (change)="atualizaArquivoAdvertencia($event, advertencia)">
+
+                    <mat-icon [fontIcon]="'settings'" class="icone_details icone_opcoes" #opcoesAdvertencia
+                        [matMenuTriggerFor]="menu"></mat-icon>
+                    <mat-menu class="menu dropdown-menu mat-elevation-z3" #menu="matMenu">
+                        <a class="row dropdown-item" (click)="chamadaServicoDeObtencaoDePdfPadrao(advertencia.id)">
+                            <mat-icon [fontIcon]="'picture_as_pdf'"></mat-icon>
+                            <div class="texto_opcao">Gerar PDF padrão</div>
+                        </a>
+                        <a class="row dropdown-item"
+                            (click)="chamadaServicoDeAtualizacaoDeStatusAdvertencia(advertencia)">
+                            <mat-icon [fontIcon]="'published_with_changes'"></mat-icon>
+                            <div class="texto_opcao">Alterar status</div>
+                        </a>
+                        <a class="row dropdown-item"
+                            [ngClass]="{'dropdown-item-desabilitado': advertencia.advertenciaAssinada == null}"
+                            (click)="chamadaServicoDeObtencaoDeAnexoAdvertencia(advertencia)">
+                            <mat-icon [fontIcon]="'visibility'"></mat-icon>
+                            <div class="texto_opcao">Visualizar anexo</div>
+                        </a>
+                        <a class="row dropdown-item" (click)="chamadaServicoDeRemocaoDeAdvertencia(advertencia)">
+                            <mat-icon [fontIcon]="'delete'"></mat-icon>
+                            <div class="texto_opcao">Remover</div>
+                        </a>
+                    </mat-menu>
+
+                    <mat-icon [fontIcon]="advertencia.expandido ? 'expand_more' : 'chevron_left'"
+                        (click)="advertencia.expandido = !advertencia.expandido"
+                        class="icone_details icone_drop"></mat-icon>
+                </div>
+            </div>
+
+            <div [@slideUpDown] class="item_container_conteudo row col-xl-12 col-lg-12 col-md-l2 col-sm-12 col-12"
+                *ngIf="advertencia.expandido">
+                <div class="row item_text">
+                    {{ advertencia.descricao }}
+                </div>
+            </div>
+
+        </div>
+
+        <ul *ngIf="advertencias?.totalPages > 1" class="pagination">
+            <li (click)="voltarPagina()" [ngClass]="{'disabled': advertencias.pageNumber == 0}" class="page-item">
+                <a class="page-link">{{ geraBotaoVoltarPaginacao() }}</a>
+            </li>
+            <ng-container
+                *ngFor="let numero of GeraNumerosParaNavegarNaPaginacao(advertencias.totalPages); let i = index">
+                <li *ngIf="(advertencias.pageNumber - i) <= 3 && (advertencias.pageNumber - i) >= 0
+                    || (i - advertencias.pageNumber) <= 3 && (i - advertencias.pageNumber) >= 0
+                    || advertencias.pageNumber == 0 && (i - advertencias.pageNumber) <= 6 && (i - advertencias.pageNumber) >= 0
+                    || advertencias.pageNumber == 1 && (i - advertencias.pageNumber) <= 5 && (i - advertencias.pageNumber) >= 0
+                    || advertencias.pageNumber == 2 && (i - advertencias.pageNumber) <= 4 && (i - advertencias.pageNumber) >= 0
+                    || (advertencias.pageNumber == (advertencias.totalPages-1)) && (advertencias.pageNumber - i) <= 6
+                    || (advertencias.pageNumber == (advertencias.totalPages-2)) && (advertencias.pageNumber - i) <= 5
+                    || (advertencias.pageNumber == (advertencias.totalPages-3)) && (advertencias.pageNumber - i) <= 4"
+                    (click)="selecionarPagina(i)" [ngClass]="{'active': advertencias.pageNumber == i}"
+                    class="page-item">
+                    <a class="page-link">{{ i+1 }}</a>
+                </li>
+            </ng-container>
+            <li (click)="avancarPagina()" [ngClass]="{'disabled': advertencias.pageNumber == advertencias.totalPages-1}"
+                class="page-item"><a class="page-link">{{ geraBotaoAvancarPaginacao() }}</a></li>
+        </ul>
+
+    </div>
+</div>
+
+<ng-template #conteudoVazio class="container_vazio col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+
+    <div class="block_vazio col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        Não há nenhum item por aqui
+    </div>
+</ng-template>

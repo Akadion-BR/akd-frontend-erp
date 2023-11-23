@@ -1,0 +1,50 @@
+<div class="container col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mat-elevation-z8">
+
+    <h1 class="titulo col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        Cadastrar novo colaborador
+    </h1>
+
+    <hr class="hr">
+
+    <mat-horizontal-stepper (selectionChange)="mudaPasso($event)" linear #stepper>
+
+        <ng-template matStepperIcon="edit">
+            <i class="fa fa-check"></i>
+        </ng-template>
+
+        <ng-template matStepperIcon="number">
+            <i class="fa fa-fire"></i>
+        </ng-template>
+
+        <mat-step [stepControl]="dadosColaborador" editable="true">
+            <ng-template matStepLabel>
+                <span>Pessoal</span>
+            </ng-template>
+            <app-dados-pessoais [stepAtual]="stepAtual"
+                [setupDadosAtualizacao]="colaboradorPreAtualizacao ? colaboradorPreAtualizacao : null"
+                (emissorDeDadosPessoaisDoColaborador)="recebeFormGroupDadosPessoais($event)"></app-dados-pessoais>
+        </mat-step>
+
+        <mat-step [stepControl]="dadosProfissionais" editable="true">
+            <ng-template matStepLabel>
+                <span>Profissional</span>
+            </ng-template>
+            <app-dados-profissionais [stepAtual]="stepAtual"
+                [setupDadosProfissionaisAtualizacao]="colaboradorPreAtualizacao ? colaboradorPreAtualizacao : null"
+                (emissorDeContratoContratacao)="recebeContratoContratacao($event)"
+                (emissorDeDadosProfissionaisDoColaborador)="recebeFormGroupDadosProfissionais($event)"></app-dados-profissionais>
+        </mat-step>
+
+        <mat-step [stepControl]="dadosAcesso" editable="true">
+            <ng-template matStepLabel>
+                <span>Sistema</span>
+            </ng-template>
+            <app-dados-acesso [stepAtual]="stepAtual"
+                [setupDadosAcessoAtualizacao]="colaboradorPreAtualizacao ? colaboradorPreAtualizacao : null"
+                (emissorDeSolicitacaoDeEnvioDeFormulario)="direcionaEnvioDeFormulario()"
+                (emissorDeDadosAcessoDoColaborador)="recebeFormGroupDadosAcesso($event)"></app-dados-acesso>
+        </mat-step>
+
+    </mat-horizontal-stepper>
+
+</div>

@@ -1,0 +1,38 @@
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { SidenavComponent } from './shared/sidenav/sidenav.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: SidenavComponent,
+    children: [
+      {
+        path: 'despesas',
+        loadChildren: () => import('./modules/pages/despesas/despesas-routing.module').then(m => m.DespesasRoutingModule)
+      },
+      {
+        path: 'clientes',
+        loadChildren: () => import('./modules/pages/clientes/clientes-routing.module').then(m => m.ClientesRoutingModule)
+      },
+      {
+        path: 'colaboradores',
+        loadChildren: () => import('./modules/pages/colaboradores/colaboradores-routing.module').then(m => m.ColaboradoresRoutingModule)
+      },
+      {
+        path: 'patrimonios',
+        loadChildren: () => import('./modules/pages/patrimonios/patrimonios-routing.module').then(m => m.PatrimoniosRoutingModule)
+      }
+    ]
+  },
+  {
+    path: '**',
+    redirectTo: '/'
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }

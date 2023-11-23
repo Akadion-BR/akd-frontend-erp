@@ -1,0 +1,97 @@
+<div class="container row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mat-elevation-z8">
+    <div class="subcontainer row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <h1 class="titulo_principal"> {{ 'DETALHES DO PATRIMÔNIO ' }} </h1>
+        <hr class="hr_titulo_principal">
+
+        <div class="dados row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" style="display: flex; justify-content: center;">
+                <h1 class="titulo_item mat-elevation-z4">
+                    {{ patrimonio?.descricao }}
+                </h1>
+            </div>
+
+            <div class="block_dados row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <label class="titulo col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    Descrição
+                </label>
+                <p class="descricao col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    {{ patrimonio?.descricao }}
+                </p>
+            </div>
+
+            <div class="block_dados row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <label class="titulo col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    Data de cadastro
+                </label>
+                <p class="descricao col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    {{ (patrimonio?.dataCadastro | date: 'dd/MM/yyyy') + ' às ' + (patrimonio?.horaCadastro.slice(0, 5))
+                    }}
+                </p>
+            </div>
+
+            <div class="block_dados row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <label class="titulo col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    Data de aquisição
+                </label>
+                <p class="descricao col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    {{ patrimonio?.dataEntrada | date: 'dd/MM/yyyy' }}
+                </p>
+            </div>
+
+            <div class="block_dados row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <label class="titulo col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    Valor
+                </label>
+                <p class="descricao col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    {{ patrimonio?.valor | currency: 'BRL' }}
+                </p>
+            </div>
+
+            <div class="block_dados row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <label class="titulo col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    Tipo
+                </label>
+                <p class="descricao col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    {{ patrimonio?.tipoPatrimonio | titlecase }}
+                </p>
+            </div>
+
+        </div>
+
+        <hr class="hr_titulo_principal">
+
+        <div class="container_acoes row col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+
+            <div class="row acao_block" (click)="retornaParaTelaAnterior()">
+                <mat-icon fontIcon="'arrow_back'" class="icone"></mat-icon>
+                <div class="acao_texto">
+                    Voltar
+                </div>
+            </div>
+
+            <div class="row acao_block" (click)="redirecionaParaEdicao()">
+                <mat-icon fontIcon="'edit'" class="icone"></mat-icon>
+                <div class="acao_texto">
+                    Editar
+                </div>
+            </div>
+
+            <div class="row acao_block" (click)="imprimeItem()">
+                <mat-icon fontIcon="'print'" class="icone"></mat-icon>
+                <div class="acao_texto">
+                    Imprimir
+                </div>
+            </div>
+
+            <div class="row acao_block acao_block_remover" (click)="removeItem()">
+                <mat-icon fontIcon="'delete'" class="icone"></mat-icon>
+                <div class="acao_texto">
+                    Remover
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
